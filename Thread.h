@@ -40,6 +40,7 @@ class Thread
 	//pure virtual method which should be implemented in the derived classs
 	virtual void run() = 0;
 	
+	
 	/**
 	* METHOD THAT IMPLEMENTED ONLY ON THE THREAD CLASS
 	* DO NOT OVERRIDE THIS START METHOD -- find a way upto it
@@ -47,13 +48,20 @@ class Thread
 	**/
 	
 	//simply start the thread
-	void start();
+	void 	start();
 	
 	//sleeps for the specified time of milisecond
-	void sleep(long milis);
+	void 	sleep(long milis);
 	
 	//join functionality of thread
-	void join();
+	void 	join();
+	
+	//stop the running thred, if the thread is not running, calling it has no effect
+	void	stop();
+	
+	//identification of each thread -- name like feature, difference is that you cant set a id for each thread, it is being pre-defined
+	long	getID();
+	
 };
 
 #endif
