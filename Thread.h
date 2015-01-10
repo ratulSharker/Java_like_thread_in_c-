@@ -4,7 +4,12 @@
 #include <iostream>
 #include <pthread.h>
 
-#define implements :public
+
+
+#define implements 			:public
+#define anonymous 			class:public 
+
+
 //#define MILI_TO_NANO(mili)	mili*1000000L	
 
 /*

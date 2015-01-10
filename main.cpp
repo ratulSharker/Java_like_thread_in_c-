@@ -23,7 +23,7 @@ public:
 int main (int argc, char *argv[])
 {
 
-
+	/*
 	MyRunner *runner1 = new MyRunner(),
 			 *runner2 = new MyRunner();
 	
@@ -38,11 +38,14 @@ int main (int argc, char *argv[])
 	
 	delete runner1;
 	delete runner2;
-
-	/*
-	//making an anynomus thread
-	Thread *t = new Thread{
-		public void run()
+	*/
+	
+	/**
+	EXAMPLE OF MAKING AN ANONYMUS THREAD LIKE JAVA
+	**/
+	anonymous Thread{
+		public:
+		void run()
 		{
 			for(int i=0;i<11;i++)
 			{
@@ -50,12 +53,25 @@ int main (int argc, char *argv[])
 				this->sleep(1000);
 			}
 		}
-	}();
+	}t;
 	
-	t->start();
+	anonymous Thread{
+		public:
+		void run()
+		{
+			for(int i=0;i<11;i++)
+			{
+				std::cout<<"count2 "<<i<<std::endl;
+				this->sleep(1000);
+			}
+		}
+	}t2;
 	
-	t->join();
-	*/
+	t.start();
+	t2.start();
+	
+	t.join();
+	t2.join();
 	
 	return 0;
 }
