@@ -23,14 +23,16 @@
 
 class Thread
 {
-	//PRIVATE AREA
+	//PRIVATE AREA FOR PROPERTIES
 	private:
 	
 	#ifdef DECLARE_THREAD_CLASS_MEMBER_AS_POINTER
-		pthread_t	*m_pthread;
-	#else
+		pthread_t       *m_pthread;
+    #else
 		pthread_t	 m_pthread;
 	#endif
+    
+    static pthread_mutex_t  m_mutex_lock; //used in the "pthread_entry_point" static function so that  in a time being only one instance of Thread   can access to the "pthread_entry_point" function so that the synchronization works :)
 	
 	//PUBLIC AREA
 	public:
@@ -67,6 +69,12 @@ class Thread
 	//identification of each thread -- name like feature, difference is that you cant set a id for each thread, it is being pre-defined
 	long	getID();
 	
+	
+	//PRIVATE AREA FOR METHOD
+	private:
+	
+	//this static function will serve as the entry point of the thread
+	static void* pthread_entry_point(void *thread_obj);
 };
 
 #endif

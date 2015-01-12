@@ -1,5 +1,8 @@
 #include "Thread.h"
 
+//WINDOWS HEADER FUNCTION IS BEING USED, THATS WHY I HAD TO SPECIFICALLY DECLARE WHICH OS I IN
+#define WINDOWS
+
 long runner_1_id;
 
 class MyRunner implements Thread
@@ -49,7 +52,7 @@ int main (int argc, char *argv[])
 		{
 			for(int i=0;i<11;i++)
 			{
-				std::cout<<"count "<<i<<std::endl;
+				std::cout<<"A "<<i<<std::endl;
 				this->sleep(1000);
 			}
 		}
@@ -61,14 +64,15 @@ int main (int argc, char *argv[])
 		{
 			for(int i=0;i<11;i++)
 			{
-				std::cout<<"count2 "<<i<<std::endl;
+				std::cout<<"B "<<i<<std::endl;
 				this->sleep(1000);
 			}
 		}
 	}t2;
 	
+    t2.start();
 	t.start();
-	t2.start();
+	
 	
 	t.join();
 	t2.join();

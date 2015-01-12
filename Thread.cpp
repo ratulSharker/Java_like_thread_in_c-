@@ -1,12 +1,19 @@
 #include "Thread.h"
+
+#ifdef WINDOWS
 #include <windows.h>
+#endif
 #include <cstring>
 
-/**
- The purpose of declaration as static is so that, no one else outside of this file can't access this function
-**/
-static void *global_c_function_for_pthread_start(void* thread_obj)
+//initializing the non-const static member
+pthread_mutex_t Thread::m_mutex_lock = PTHREAD_MUTEX_INITIALIZER;
+
+//static private method -- nobody can access it :D except the Thread class
+void* Thread::pthread_entry_point(void *thread_obj)
 {
+    //locking the access only to the single thread
+    pthread_mutex_lock(&Thread::m_mutex_lock);
+    
 	if(thread_obj == NULL){
 		std::cout<<"it's null bro";
 		return NULL;
@@ -21,7 +28,13 @@ static void *global_c_function_for_pthread_start(void* thread_obj)
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, &prevType);
 	
 	Thread *obj = (Thread*)thread_obj;
-	obj->run();
+
+    //before starting the real concurrent method -- we should release the mutex, otherwise two thread can't run concurrently
+    pthread_mutex_unlock(&Thread::m_mutex_lock);
+    
+    obj->run();
+	
+	//don't mess up with the "pthread_mutex_unlock(&Thread::m_mutex_lock)" line, if U wanna put this line just after the "obj->run()" all thread created extending or by anonymous class (supplying the run method) will be executed in a serialized manner, which is the opposite goal of parallel programming -- IF U DONT UNDERSTAND JUST KEEP UR HANDS OFF THIS FUNCTION :P
 }
 
 //CONSTRUCTOR
@@ -57,7 +70,7 @@ void Thread::start()
 	#ifdef DECLARE_THREAD_CLASS_MEMBER_AS_POINTER
 		if( pthread_create(	this->m_pthread,
 						NULL, //this attribute must be implemented
-						global_c_function_for_pthread_start,
+						&(Thread::pthread_entry_point),
 						(void*)this) )
 		{
 			//you can throw exception here  -- further design issue
@@ -65,7 +78,7 @@ void Thread::start()
 	#else
 		if( pthread_create(	&(this->m_pthread),
 						NULL, //this attribute must be implemented
-						global_c_function_for_pthread_start,
+						&(Thread::pthread_entry_point),
 						(void*)this) )
 		{
 			//you can throw exception here  -- further design issue
@@ -73,11 +86,15 @@ void Thread::start()
 	#endif
 }
 
+//simple thread functionlity
 void  Thread::sleep(long milis)
 {
-	Sleep(milis);
+    #ifdef WINDOWS
+        Sleep(milis);
+    #endif
 }
 
+//simple thread functionlity
 void Thread::join()
 {
 	//deallocate the m_pthread property
@@ -88,8 +105,7 @@ void Thread::join()
 	#endif
 }
 
-
-
+//simple thread functionality
 void Thread::stop()
 {
 	#ifdef DECLARE_THREAD_CLASS_MEMBER_AS_POINTER
@@ -99,6 +115,7 @@ void Thread::stop()
 	#endif
 }
 
+//simple thread functionality 
 long Thread::getID()
 {
 	unsigned long mem_add = 0;
