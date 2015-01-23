@@ -1,8 +1,7 @@
 #include "Thread.h"
-
-#ifdef WINDOWS
 #include <windows.h>
-#endif
+
+
 #include <cstring>
 
 //initializing the non-const static member
@@ -47,6 +46,13 @@ Thread::Thread()
 	#else
 		//nothing until now
 	#endif
+	
+	//KEEP IN MIND AT THE DESTRUCTOR IF POSSIBLE THIS VARIABLES SHOULD BE DEALLOCATED (if possible)
+	//initialize the condition variables used for the wait method
+	this->m_do_thread_wait = NO;
+	this->m_cond_mutex_for_wait = PTHREAD_MUTEX_INITIALIZER;
+	this->m_cond_var_for_wait = PTHREAD_COND_INITIALIZER;
+	
 }
 
 //DESTRUCTOR
@@ -84,14 +90,14 @@ void Thread::start()
 			//you can throw exception here  -- further design issue
 		}
 	#endif
+	
+	this->thread_status = THREAD_NOT_YET_STARTED;
 }
 
 //simple thread functionlity
 void  Thread::sleep(long milis)
 {
-    #ifdef WINDOWS
-        Sleep(milis);
-    #endif
+	SLEEP(milis); //this SLEEP method is basically a macro, which will be set at the compile time depending on the platform. It is being declared in the Thread.h
 }
 
 //simple thread functionlity
@@ -116,13 +122,40 @@ void Thread::stop()
 }
 
 //simple thread functionality 
-long Thread::getID()
+unsigned long Thread::getID()
 {
 	unsigned long mem_add = 0;
 	
 	#ifdef DECLARE_THREAD_CLASS_MEMBER_AS_POINTER
-		mem_add = (long)this->m_pthread;
+		mem_add = (unsigned long)this->m_pthread;
 	#else
-		mem_add = (long)&(this->m_pthread);
+		mem_add = (unsigned long)&(this->m_pthread);
 	#endif
+	
+	return mem_add;
+}
+
+unsigned long Thread::wait(bool isBlocking, unsigned long checkingPeriod)
+{
+	this->m_do_thread_wait = YES;
+	
+	while(this->thread_status !=THREAD_CHECKING_FOR_WAIT && isBlocking == YES)
+	{
+		Sleep(checkingPeriod);
+	}
+	
+	unsigned long mem_add = 0;
+	mem_add = (unsigned long)&this->m_cond_var_for_wait;
+	return mem_add;
+}
+
+void Thread::notify()
+{
+	this->m_do_thread_wait = NO;
+	pthread_cond_signal( &m_cond_var_for_wait );
+}
+
+inline THREAD_STATUS Thread::getStatus()
+{
+	return this->thread_status;
 }
