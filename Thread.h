@@ -4,14 +4,24 @@
 #include <iostream>
 #include <pthread.h>
 
-#define WINDOWS_PLATFORM
+//at a time enable only one
+//#define WINDOWS_PLATFORM
 //#define LINUX_PLATFORM
-//#define OSX_PLATFORM
+#define OSX_PLATFORM
 
+
+//os dependent sleep implementation
 #ifdef WINDOWS_PLATFORM
-	#include <windows.h>
-	#define SLEEP(MILLIS) Sleep(MILLIS)
+    #include <windows.h>
+    #define SLEEP(MILLIS) Sleep(MILLIS)
 #endif
+
+
+#ifdef OSX_PLATFORM
+    #include <unistd.h>
+    #define SLEEP(MILLIS) usleep(MILLIS * 1000)
+#endif
+
 
 
 //SOME STATE VALUES
