@@ -1,8 +1,13 @@
 #include "Thread.h"
-#include <windows.h>
-
+#include "UnControlledSynchronizer.h"
+#include "ControlledSynchronizer.h"
 
 #include <cstring>
+
+
+
+
+
 
 //initializing the non-const static member
 pthread_mutex_t Thread::m_mutex_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -34,6 +39,8 @@ void* Thread::pthread_entry_point(void *thread_obj)
     obj->run();
 	
 	//don't mess up with the "pthread_mutex_unlock(&Thread::m_mutex_lock)" line, if U wanna put this line just after the "obj->run()" all thread created extending or by anonymous class (supplying the run method) will be executed in a serialized manner, which is the opposite goal of parallel programming -- IF U DONT UNDERSTAND JUST KEEP UR HANDS OFF THIS FUNCTION :P
+    
+    return NULL;
 }
 
 //CONSTRUCTOR
@@ -50,8 +57,8 @@ Thread::Thread()
 	//KEEP IN MIND AT THE DESTRUCTOR IF POSSIBLE THIS VARIABLES SHOULD BE DEALLOCATED (if possible)
 	//initialize the condition variables used for the wait method
 	this->m_do_thread_wait = NO;
-	this->m_cond_mutex_for_wait = PTHREAD_MUTEX_INITIALIZER;
-	this->m_cond_var_for_wait = PTHREAD_COND_INITIALIZER;
+	this->m_cond_mutex_for_wait = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+	this->m_cond_var_for_wait = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
 	
 }
 
@@ -141,7 +148,7 @@ unsigned long Thread::wait(bool isBlocking, unsigned long checkingPeriod)
 	
 	while(this->thread_status !=THREAD_CHECKING_FOR_WAIT && isBlocking == YES)
 	{
-		Sleep(checkingPeriod);
+		SLEEP(checkingPeriod);
 	}
 	
 	unsigned long mem_add = 0;
