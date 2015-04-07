@@ -1,3 +1,7 @@
+#ifndef	UNCONTROLLED_SYNCHRONIZER_h
+#define UNCONTROLLED_SYNCHRONIZER_h
+
+
 #include <pthread.h>
 //here some of the macro defination will do our work
  
@@ -10,3 +14,6 @@
 #define ENABLE_SYNCHRONIZATION_FOR_UNCONTROLLED_SYNCHRONIZER(syncher) pthread_mutex_lock( &syncher )
  
 #define DISABLE_SYNCHRONIZATION_FOR_UNCONTROLLED_SYNCHRONIZER(syncher) pthread_mutex_unlock ( &syncher )
+
+
+#endif

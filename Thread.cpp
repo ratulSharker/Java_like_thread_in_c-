@@ -46,7 +46,8 @@ void* Thread::pthread_entry_point(void *thread_obj)
 //CONSTRUCTOR
 Thread::Thread()
 {	
-	std::cout<<"constructor called"<<std::endl;
+	//std::cout<<"constructor called"<<std::endl;
+	
 	//allocate the m_pthread property
 	#ifdef DECLARE_THREAD_CLASS_MEMBER_AS_POINTER
 		this->m_pthread = (pthread_t*) malloc(sizeof(pthread_t));
@@ -65,7 +66,7 @@ Thread::Thread()
 //DESTRUCTOR
 Thread::~Thread()
 {
-	std::cout<<"destructor called"<<std::endl;
+	//std::cout<<"destructor called"<<std::endl;
 	
 	//deallocate the m_pthread property
 	#ifdef DECLARE_THREAD_CLASS_MEMBER_AS_POINTER

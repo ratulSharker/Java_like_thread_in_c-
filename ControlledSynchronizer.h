@@ -1,3 +1,5 @@
+#ifndef	UNCONTROLLED_SYNCHRONIZER_h
+#define UNCONTROLLED_SYNCHRONIZER_h
 
 #include <pthread.h>
 
@@ -20,3 +22,4 @@ struct controlled_synchronizer_stuct
 
 #define STOP_WAITED( cond_sync ) pthread_cond_signal( &cond_sync.cond_var );
 
+#endif
