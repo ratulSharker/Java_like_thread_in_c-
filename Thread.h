@@ -28,14 +28,17 @@
 enum THREAD_STATUS
 	{	THREAD_CHECKING_FOR_WAIT,
 		THREAD_RUNNING,	
-		THREAD_NOT_YET_STARTED	
+		THREAD_NOT_YET_STARTED,
+        THREAD_RUN_METHOD_RUNNING_COMPLETED,
+        THREAD_STOPPED
 	};//these enums are defined for determining the state of the thread inside the run() loop method. this method is called loop method it is the thread where loopy works are done :). These macros are use for implementing a blocking-nonblocking feature on thread class
 
 //SOME OF MY OWN SUGAR
 #define ENABLE_WAIT_CHECKING  pthread_mutex_lock( &this->m_cond_mutex_for_wait );  \
 							  this->thread_status=THREAD_CHECKING_FOR_WAIT; \
 							  while(this->m_do_thread_wait==YES) \
-							  pthread_cond_wait(&this->m_cond_var_for_wait, &this->m_cond_mutex_for_wait)
+							  pthread_cond_wait(&this->m_cond_var_for_wait, &this->m_cond_mutex_for_wait);\
+                              this->thread_status=THREAD_RUNNING
 			
 #define	DISABLE_WAIT_CHECKING pthread_mutex_unlock( &this->m_cond_mutex_for_wait )
 
@@ -121,7 +124,7 @@ class Thread
 	void notify();
 	
 	//get the current status of the thread. check against the THREAD_STATUS enum declaration.
-	inline THREAD_STATUS getStatus();
+    inline THREAD_STATUS getStatus(){ return this->thread_status; }
 	
 	//PRIVATE AREA FOR METHOD
 	private:
