@@ -5,9 +5,9 @@
 #include <pthread.h>
 
 //at a time enable only one
-#define WINDOWS_PLATFORM
+//#define WINDOWS_PLATFORM
 //#define LINUX_PLATFORM
-//#define OSX_PLATFORM
+#define OSX_PLATFORM
 
 
 //os dependent sleep implementation
