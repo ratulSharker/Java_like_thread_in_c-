@@ -11,8 +11,8 @@ struct controlled_synchronizer_stuct
 
 #define CONTROLLED_SYNCHRONIZER	struct controlled_synchronizer_stuct
 
-#define INITIALIZE_THE_CONTROLLED_SYNCHRONIZER( cond_sync ) cond_sync.mutex = PTHREAD_MUTEX_INITIALIZER; \
-															cond_sync.cond_var = PTHREAD_COND_INITIALIZER
+#define INITIALIZE_THE_CONTROLLED_SYNCHRONIZER( cond_sync ) cond_sync.mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER; \
+															cond_sync.cond_var = (pthread_cond_t)PTHREAD_COND_INITIALIZER
 
 #define ENABLE_CONDITIONAL_SYNCHRONIZER( cond_sync ) pthread_mutex_lock( &cond_sync.mutex )
 
