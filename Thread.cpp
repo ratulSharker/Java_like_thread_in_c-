@@ -38,6 +38,9 @@ void* Thread::pthread_entry_point(void *thread_obj)
     
     obj->run();
 	
+    //change the state of the thread
+    obj->thread_status = THREAD_RUN_METHOD_RUNNING_COMPLETED;
+    
 	//don't mess up with the "pthread_mutex_unlock(&Thread::m_mutex_lock)" line, if U wanna put this line just after the "obj->run()" all thread created extending or by anonymous class (supplying the run method) will be executed in a serialized manner, which is the opposite goal of parallel programming -- IF U DONT UNDERSTAND JUST KEEP UR HANDS OFF THIS FUNCTION :P
     
     return NULL;
@@ -61,6 +64,8 @@ Thread::Thread()
 	this->m_cond_mutex_for_wait = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	this->m_cond_var_for_wait = (pthread_cond_t)PTHREAD_COND_INITIALIZER;
 	
+    //just object created but not started yet
+    this->thread_status = THREAD_NOT_YET_STARTED;
 }
 
 //DESTRUCTOR
@@ -98,8 +103,6 @@ void Thread::start()
 			//you can throw exception here  -- further design issue
 		}
 	#endif
-	
-	this->thread_status = THREAD_NOT_YET_STARTED;
 }
 
 //simple thread functionlity
@@ -127,6 +130,8 @@ void Thread::stop()
 	#else
 		pthread_cancel(this->m_pthread);
 	#endif
+    
+    this->thread_status = THREAD_STOPPED;
 }
 
 //simple thread functionality 
@@ -163,7 +168,8 @@ void Thread::notify()
 	pthread_cond_signal( &m_cond_var_for_wait );
 }
 
+/* //moved to Thread.h 
 inline THREAD_STATUS Thread::getStatus()
 {
 	return this->thread_status;
-}
+}*/
