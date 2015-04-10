@@ -4,6 +4,10 @@
 
 #include <cstring>
 
+#ifdef LINUX_PLATFORM
+	//for the malloc to work, this header is necessary in linux	
+	#include <stdlib.h>
+#endif
 
 
 
